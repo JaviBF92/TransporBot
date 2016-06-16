@@ -1,0 +1,656 @@
+<!--hjcer310.jsp versión:  ver FEB 2004  --->
+<!-- 
+/******************************************************************************
+  * FICHERO: hjcer310.jsp
+  * ****************************************************************************
+  * Fecha         	Responsable     	 Descripción
+  * --------     	------------         -----------------
+  * 28/11/2011		INDRA.SCCID73	 	 44622 (INC000000293596): Horarios de Cataluña
+  *****************************************************************************/ 
+-->
+<!--RNF09-CER001 RQ CERRF001 Introducir i18n en cercanías.-->
+<!--FIN RNF09-CER001 RQ CERRF001.-->
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- hjcer312.jsp versión nueva web feb 2009  --><head>
+<link href="/cer/css/style_cer.css" rel="stylesheet" />
+<!--RNF09-CER001 RQ CERRF001 Introducir i18n en cercanías.-->
+<title>RENFE: Cercanías </title>
+<!--FIN RNF09-CER001 RQ CERRF001.-->
+<style type="text/css">
+.TA {scrollbar-3dlight-color:;
+     scrollbar-arrow-color:#666666;
+     scrollbar-base-color:#ffffff;
+     scrollbar-darkshadow-color:#ffffff;
+     scrollbar-face-color:#EDEBEB;
+     scrollbar-highlight-color:#ffffff;
+     scrollbar-shadow-color:#666666
+	 }
+
+body {
+	font-size:62.5%;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	
+}
+
+#contenedor {
+	 width:100%;
+	 height:auto;
+	 margin-left:10px;
+	 font-size:1em;
+	 font-family:Arial, Helvetica, sans-serif;
+	font-weight: normal;
+	text-decoration: none;
+	color: #000000;
+	font-style: normal;	 
+ }
+
+
+h1 {
+	margin-left:1em;
+	font-size: 1.3em;
+	font-weight: normal;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #D2200A;
+	font-style: normal;
+	line-height: 1.2em;
+	font-weight: normal;
+	margin-right: 0.5em;
+}
+
+h2 {
+	margin-left:15px;
+	font-size: 1.2em;
+	font-family: Verdana,Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #666666;
+	font-style: normal;
+	font-weight: normal;	
+}
+
+
+
+h3 {
+	margin-left:1em;
+	font-size: 1em;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #666666;
+	font-style: normal;
+	line-height: 1.2em;
+	font-weight: normal;
+	margin-right: 0.5em;
+}
+
+h4 {
+	margin-left:1em;
+	font-size: 1.2em;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #000000;
+	font-style: normal;
+	line-height: 1.2em;
+	font-weight: normal;
+	margin-right: 0.5em;
+	}
+	
+.caja_texto {
+	BORDER-RIGHT: #cccccc 0.1em solid; 
+	BORDER-TOP: #cccccc 1px solid; 
+	FONT-SIZE: 0.8em; 
+	BORDER-LEFT: #cccccc 1px solid; 
+	BORDER-BOTTOM: #cccccc 0.1em solid; 
+	FONT-FAMILY: Arial, Helvetica, sans-serif; 
+	HEIGHT: 1.5em; 
+	BACKGROUND-COLOR: #ffffff
+	}
+
+#menuderecho_lineagris {
+	list-style-position: inherit;
+	margin-left: 5px;
+	line-height: 10px;
+	background-image: url("/cer/gif/back_pgris.gif");	
+}
+
+
+
+.titulo_rojo {
+	margin-left:1em;
+	font-size: 1.3em;
+	font-weight: normal;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #D2200A;
+	font-style: normal;
+	line-height: 1.2em;
+	font-weight: normal;
+	margin-right: 0.5em;
+}
+
+
+.titulo_negro {
+	margin-left:1em;
+	font-size: 1.1em;
+	font-weight: normal;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #000000;
+	font-style: normal;
+	line-height: 1.2em;
+	font-weight: normal;
+	margin-right: 0.5em;
+}
+
+.titulo_gris {
+	margin-left:1em;
+	font-size: 1.3em;
+	font-weight: normal;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #666666;
+	font-style: normal;
+	line-height: 1.2em;
+	font-weight: normal;
+	margin-right: 0.5em;
+}
+
+
+#fondo_caja {
+	background-color:#F2F2F2;
+	height:25px;
+	margin-left:1em;
+	font-size: 1.1em;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #000000;
+	font-style: normal;
+	line-height: 1.2em;
+	font-weight: normal;
+	margin-right: 0.5em;	
+	
+}
+
+A.linkgris {
+	FONT-SIZE: 1.1em; COLOR: #666666; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: none; line-height:auto;
+}
+
+A.linkgris:hover {
+	FONT-SIZE: 1.1em; COLOR: #D2200A; FONT-FAMILY: Arial, Helvetica, sans-serif; TEXT-DECORATION: underline; line-height:auto;
+
+}
+
+
+.celda_pijama_gris {
+	margin-left:5px;
+	font-size: 0.8em;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+	color: #666666;
+	font-style: normal;
+	line-height:normal;
+	font-weight: normal;
+	text-align:center;
+	background-color:#F5F6F6;		
+}
+
+
+.celda_txto_negro {
+	margin-left:5px;
+	font-size: 0.9em;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #000000;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	text-align:center;
+	}	
+
+
+.celda_pijama_negro {
+	margin-left:5px;
+	font-size: 0.9em;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #000000;
+	font-style: normal;
+	line-height: normal;
+	font-weight: normal;
+	text-align:center;
+	background-color:#F5F6F6;
+	}		
+
+
+.cabe{
+	font:0.8em;
+	font-family:Arial, Helvetica, sans-serif; 
+	background-color: rgb(193,51,51); 
+	color: #FFFFFF;
+	}
+
+.rojo   {font:10px Arial, Helvetica, sans-serif; color:red; background-color: rgb(191,216,216); }
+.azul   {font:10px Arial, Helvetica, sans-serif; background-color: rgb(191,216,216);}
+
+.cabecera2   {font:11pt arial;  background-color: rgb(222,219,219); color: black;}
+.esta   {font:10px Arial, Helvetica, sans-serif; 
+background-color: rgb(255,204,204);
+
+}
+   .color1 {font:0.7em Arial, Helvetica, sans-serif; background-color: rgb(192,192,192);}
+   .color2 {font:0.7em Arial, Helvetica, sans-serif; background-color: rgb(222,219,219);}
+   .color3 {font:0.7em Arial, Helvetica, sans-serif; background-color:#e0e0e0;}
+
+   .rojo1  {font:0.7em Arial, Helvetica, sans-serif; color:red; background-color: rgb(192,192,192); }
+   .rojo2  {font:0.7em Arial, Helvetica, sans-serif; color:red; background-color: rgb(192,192,192); }
+   .rojo3  {font:0.7em Arial, Helvetica, sans-serifl; color:red;background-color: rgb(222,219,219); }
+   .gris   {font:0.7em Arial, Helvetica, sans-serif; background-color: rgb(192,192,192); }
+   .grismejor  {font:0.7em Arial, Helvetica, sans-serif; background-color: rgb(192,192,192);
+               color:yellow; }
+   .azulmejor  {font:0.7em Arial, Helvetica, sans-serif; background-color: rgb(191,216,216);
+               color:yellow;}
+   .griso  {font:0.7em Arial, Helvetica, sans-serif; background-color: rgb(168,168,168); }
+</style>
+</head>
+
+<body text="000000" marginwidth="0" marginheight="0" bgcolor="FFFFFF" topmargin="0" leftmargin="0" class="TA">
+
+<div id="contenedor">
+<h1>
+<!--RNF09-CER001 RQ CERRF001 Introducir i18n en cercanías.-->
+Horarios Solicitados
+<!--FIN RNF09-CER001 RQ CERRF001.-->
+</h1>
+<h4>
+               
+   Horarios válidos desde   <b> 14-06-2016 </b>
+   hasta   <b> 14-06-2016 </b>
+   
+
+   
+   <br /><br />
+
+<a class="titulo_negro" href="/cer/hjcer310.jsp?&amp;nucleo=30&amp;o=51103%0A&amp;d=51110&amp;tc=DIA&amp;td=D&amp;df=20160614&amp;th=1%0A&amp;ho=00&amp;i=s&amp;cp=NO&amp;TXTInfo="><img border="0" alt="Solicitar los Horarios de Regreso en el día" src="/cer/gif/cerinverso.jpg" />
+Solicitar los Horarios de Regreso en el día </a>
+<div id="imprimir">
+<a class="titulo_negro" id="imprimir" href="javascript:window.print();"><img border="0" alt="Imprimir horarios" src="/cer/gif/cercaimp.jpg" /> Imprimir horarios</a>
+</div>
+
+</h4>
+
+<span class="titulo_rojo">Origen :</span> <span class="titulo_negro">Virgen del Rocio                        </span><br />
+
+<span class="titulo_rojo">Destino  :</span> <span class="titulo_negro">Dos Hermanas                            
+	</span><br />
+<br />
+<span class="titulo_rojo">Día de viaje:  :</span> <span class="titulo_negro">14-06-2016</span>
+	
+	 	
+	 	
+<br /><br />
+  	
+	
+<br /><br />
+<table cellspacing="1" cellpadding="1" width="100%" border="0" align="center">
+<tbody>
+          <tr>
+            <td valign="middle" align="center" colspan="5">
+              
+          </td></tr><tr>
+          
+          	 
+          	<td align="center" class="cabe"> Línea </td>
+            <td align="center" class="cabe"> Hora Salida  </td>
+            <td align="center" class="cabe"> Hora Llegada  </td>
+           
+            <td align="center" class="cabe"> Tiempo de Viaje </td>
+            <td align="center" class="cabe"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">06.51</td>
+            <td align="center" class="color2">07.02</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">07.20</td>
+            <td align="center" class="color2">07.31</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">07.35</td>
+            <td align="center" class="color2">07.46</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">07.56</td>
+            <td align="center" class="color2">08.07</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">08.25</td>
+            <td align="center" class="color2">08.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">08.55</td>
+            <td align="center" class="color2">09.06</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">09.25</td>
+            <td align="center" class="color2">09.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">10.24</td>
+            <td align="center" class="color2">10.35</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">11.25</td>
+            <td align="center" class="color2">11.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">12.25</td>
+            <td align="center" class="color2">12.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">13.25</td>
+            <td align="center" class="color2">13.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">14.23</td>
+            <td align="center" class="color2">14.34</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">14.37</td>
+            <td align="center" class="color2">14.48</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">15.05</td>
+            <td align="center" class="color2">15.16</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">15.25</td>
+            <td align="center" class="color2">15.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">15.55</td>
+            <td align="center" class="color2">16.06</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">16.25</td>
+            <td align="center" class="color2">16.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">17.19</td>
+            <td align="center" class="color2">17.30</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">18.25</td>
+            <td align="center" class="color2">18.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">19.25</td>
+            <td align="center" class="color2">19.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">19.55</td>
+            <td align="center" class="color2">20.06</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">20.25</td>
+            <td align="center" class="color2">20.36</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">21.23</td>
+            <td align="center" class="color2">21.34</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          <tr>
+            
+            
+            
+            
+            
+            <td align="center" class="color3">C1  </td>
+            <td align="center" class="color1">22.46</td>
+            <td align="center" class="color2">22.57</td>
+            
+            <td align="center" class="color1">0.11</td>
+            <td align="center" class="rojo3"> </td>
+          </tr>
+          
+          
+
+	</tbody>		  
+</table><br />
+<br />
+<div align="right" style="margin-right:10px;width:100%;padding-right:15px" id="volver">
+<a class="linkgris" href="javascript:history.go(-1);"><img border="0" alt="Volver " src="/cer/gif/boton_volver2_castellano.gif" /></a></div><br />
+<br />
+
+
+
+</div>
