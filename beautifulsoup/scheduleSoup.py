@@ -19,31 +19,23 @@ def save_schedule(dic, org_dst, fecha, horarios):
     dic[org_dst] = (fecha, horarios)
     pickle.dump(dic, open('horarios', 'wb'))
 
-
-
-
-hoy = date.today().strftime("%d-%m-%Y")
-while True:
-    try:
-        dic = pickle.load(open("horarios", "rb"))
-    except IOError:
-        new_empty_file()
-    else:
-        if not org_dst in dic or dic[org_dst][0] != hoy:
-            #open(html, 'r') -> lo que devuelva selenium
-            #org_dst -> el texto de telegram
-            fechas = get_schedule(open(html, "rb"))
-            save_schedule(dic, org_dst, hoy, fechas)
-            print "no exihte",fechas
-            break
+def return_schedule(html, org_dst):
+    hoy = date.today().strftime("%d-%m-%Y")
+    while True:
+        try:
+            dic = pickle.load(open("horarios", "rb"))
+        except IOError:
+            new_empty_file()
         else:
-            print "exihte", dic[org_dst][1]
-            break
+            if not org_dst in dic or dic[org_dst][0] != hoy:
+                #open(html, 'r') -> lo que devuelva selenium
+                #org_dst -> el texto de telegram
+                fechas = get_schedule(html)
+                save_schedule(dic, org_dst, hoy, fechas)
+                return fechas
+            else:
+                return dic[org_dst][1]
 
 
-"""buscar y guardar el horario para tenerlo al dia
-"""
-"""
 if __name__ == "__main__":
-    obtener_horario_BS("renfe.html")
-"""
+    print "valores de prueba:", return_schedule(open(html, 'r+'), org_dst)
