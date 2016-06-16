@@ -2,6 +2,7 @@
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from bs4 import BeautifulSoup
 from datetime import date
 import cPickle as pickle
@@ -60,7 +61,10 @@ def selenium_horarios(orig, dest):
 	display = Display(visible=0, size=(800,600))
 	display.start()
 
-	driver = webdriver.Firefox()
+	firefox_capabilities = DesiredCapabilities.FIREFOX
+	firefox_capabilities['marionette'] = True
+	firefox_capabilities['binary'] = '/usr/bin/firefox'
+	driver = webdriver.Firefox(capabilities=firefox_capabilities)
 	driver.get("http://horarios.renfe.com/cer/hjcer300.jsp?NUCLEO=30&CP=NO&I=s#")
 	elem = driver.find_element_by_name('o')
 	elem.click()
@@ -100,15 +104,18 @@ def return_schedule(orig, dest):
 			new_empty_file()
 		else:
 			org_dst = orig + "_" + dest
+			print org_dst
 			if not org_dst in dic or dic[org_dst][0] != hoy:
+				print estacionesDict.get(orig), estacionesDict.get(dest)
 				html = selenium_horarios(estacionesDict.get(orig), estacionesDict.get(dest))
+				print html
 				fechas = get_schedule(html)
 				save_schedule(dic, org_dst, hoy, fechas)
 				return fechas
 			else:
 				return dic[org_dst][1]
 
-bot = telebot.TeleBot("TOKEN")
+bot = telebot.TeleBot("220215593:AAGp_I8ILGz5SjBu7sucjvTzzB6aalCZEuc")
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
