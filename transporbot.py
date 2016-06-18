@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from datetime import date, datetime
 import cPickle as pickle
 from subprocess import call
-import telebot
+import telebot, requests
 
 estacionesDict = {
 	"alcoleadelrio" : 1,
@@ -71,6 +71,13 @@ def save_schedule(dic, org_dst, fecha, horarios):
 	pickle.dump(dic, fichero)
 	fichero.close()
 
+def request_html(org, dst):
+	r = requests.post('http://horarios.renfe.com/cer/hjcer300.jsp?NUCLEO=30&CP=NO&I=s',
+	                    data = {'nucleo':'30', 'i':'s', 'cp':'NO',
+	                            'o':'51103', 'd':'51110', 'df':'20160617',
+	                            'ho':'00', 'hd':'26', 'TXTInfo':''}).text
+
+
 def return_schedule(orig, dest):
 	hoy = date.today().strftime("%d-%m-%Y")
 	while True:
@@ -86,41 +93,46 @@ def return_schedule(orig, dest):
 			print org_dst
 			if not org_dst in dic:
 				return "No disponible"
-				
 			else:
 				horas = [i for i in dic[org_dst][1] if datetime.strptime(i, "%H.%M").time() > datetime.now().time()]
 				return "\n".join(horas)
 
-bot = telebot.TeleBot("le token", skip_pending=True)
+
+def main():
+
+	bot = telebot.TeleBot("le token", skip_pending=True)
+
+	@bot.message_handler(commands=['start'])
+	def send_welcome(message):
+		bot.reply_to(message, "Bot para conocer los horarios de Renfe Cercanias.\nPara conocer los comandos, escribe /help.")
+
+	@bot.message_handler(commands=['help'])
+	def send_help(message):
+	        bot.reply_to(message, "Comandos:\n/[provincia] [origen] [destino] Horarios desde la hora actual\n/[ciudad] [origen] [destino] [hora] Horarios desde la hora especificada")
+
+	@bot.message_handler(commands=['estaciones'])
+	def send_stations(message):
+	        reply = ""
+	        for e in estacionesList:
+	                reply = reply + e + "\n"
+	        bot.reply_to(message, reply)
+
+	@bot.message_handler(commands=['sevilla'])
+	def send_welcome(message):
+	        texto = message.text.lower()
+		listacomando = texto.split(' ')
+		if len(listacomando) == 3:
+			res = coge_horarios(str(listacomando[1]), str(listacomando[2]))
+			bot.reply_to(message, res)
+
+		if len(listacomando) == 4:
+			origen = str(listacomando[1])
+	                destino = str(listacomando[2])
+			hora = str(listacomando[3])
+
+	bot.polling()
 
 
 
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-	bot.reply_to(message, "Bot para conocer los horarios de Renfe Cercanias.\nPara conocer los comandos, escribe /help.")
-
-@bot.message_handler(commands=['help'])
-def send_welcome(message):
-        bot.reply_to(message, "Comandos:\n/[provincia] [origen] [destino] Horarios desde la hora actual\n/[ciudad] [origen] [destino] [hora] Horarios desde la hora especificada")
-
-@bot.message_handler(commands=['estaciones'])
-def send_welcome(message):
-        reply = ""
-        for e in estacionesList:
-                reply = reply + e + "\n"
-        bot.reply_to(message, reply)
-
-@bot.message_handler(commands=['sevilla'])
-def send_welcome(message):
-        texto = message.text.lower()
-	listacomando = texto.split(' ')
-	if len(listacomando) == 3:
-		res = coge_horarios(str(listacomando[1]), str(listacomando[2]))
-		bot.reply_to(message, res)
-
-	if len(listacomando) == 4:
-		origen = str(listacomando[1])
-                destino = str(listacomando[2])
-		hora = str(listacomando[3])
-
-bot.polling()
+if __name__ == "__main__":
+	main()
