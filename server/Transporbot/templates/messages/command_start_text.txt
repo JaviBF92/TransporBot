@@ -1,2 +1,0 @@
-Bienvenido a Transporbot!!
-Utiliza el comando /help para ver los comandos disponibles
