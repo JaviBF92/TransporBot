@@ -1,5 +1,4 @@
 # encoding :utf-8
-from pyvirtualdisplay import Display
 from bs4 import BeautifulSoup
 from datetime import date, datetime
 import cPickle as pickle
