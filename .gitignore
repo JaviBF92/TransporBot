@@ -89,6 +89,6 @@ ENV/
 .ropeproject
 
 #Other project files
-token
+token.py
 horarios
 TODO

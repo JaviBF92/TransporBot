@@ -7,12 +7,17 @@ from subprocess import call
 import telebot, requests
 from estaciones import get_stations
 from tidylib import tidy_document
+from token import token
 
 
 def get_schedule(html):
 	soup = BeautifulSoup(html, 'html.parser')
-	horarios = [i.string.strip() for i in soup.body.table.findAll('td', { "class" : "color1" })[::2]]
-	print horarios
+	table = soup.body.table
+	#Comprueba si es trasbordo
+	if "Origen" in str(table.tbody.contents[3].contents[3]):
+		horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color2" })[::3] if i.string != None]
+	else:
+		horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color1" })[::2] if i.string != None]
 	return horarios
 
 def new_empty_file():
@@ -35,7 +40,6 @@ def get_html(org, dst):
 	document, errors = tidy_document(r)
 	return document
 
-
 def return_schedule(orig, dest):
 	hoy = date.today().strftime("%d-%m-%Y")
 	while True:
@@ -55,17 +59,16 @@ def return_schedule(orig, dest):
 				horas = get_schedule(html)
 				save_schedule(dic, org_dst, hoy, horas)
 			else:
-				#horas = [i for i in dic[org_dst][1] if datetime.strptime(i, "%H.%M").time() > datetime.now().time()]
 				horas = dic[org_dst][1]
+			horas = [i for i in horas if datetime.strptime(i, "%H.%M").time() > datetime.now().time()]
 			if not horas:
 				return "Vaya, parece que ya no hay mas trenes hoy"
 			else:
 				return "\n".join(horas)
 
-
 def main():
 
-	bot = telebot.TeleBot("le token", skip_pending=True)
+	bot = telebot.TeleBot(token, skip_pending=True)
 
 	stations = get_stations()
 
@@ -95,6 +98,8 @@ def main():
 				bot.reply_to(message, "La estacion de origen no existe")
 			elif not listacomando[2] in stations:
 				bot.reply_to(message, "La estacion de destino no existe")
+			elif listacomando[1] == listacomando[2]:
+				bot.reply_to(message, "No creo que quieras saber eso")
 			else:
 				if len(listacomando) == 3:
 					res = return_schedule(stations[listacomando[1]], stations[listacomando[2]])
@@ -103,6 +108,8 @@ def main():
 					origen = str(listacomando[1])
 					destino = str(listacomando[2])
 					hora = str(listacomando[3])
+				if len(listacomando) > 4:
+					bot.reply_to(message, "No has introducido bien el comando")
 
 	bot.polling()
 
