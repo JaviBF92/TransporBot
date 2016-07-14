@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from datetime import date, datetime
 import cPickle as pickle
 from subprocess import call
-import telebot, requests
-from estaciones import get_stations
+import telebot, os.path
+from peticiones import get_stations, get_html
 from tidylib import tidy_document
 from token import token
 
@@ -12,11 +12,15 @@ from token import token
 def get_schedule(html):
 	soup = BeautifulSoup(html, 'html.parser')
 	table = soup.body.table
-	#Comprueba si es trasbordo
-	if "Origen" in str(table.tbody.contents[3].contents[3]):
-		horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color2" })[::3] if i.string != None]
+
+	if table == None:
+		return None
 	else:
-		horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color1" })[::2] if i.string != None]
+		#Comprueba si es trasbordo
+		if "Origen" in str(table.tbody.contents[3].contents[3]):
+			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color2" })[::3] if i.string != None]
+		else:
+			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color1" })[::2] if i.string != None]
 	return horarios
 
 def new_empty_file():
@@ -31,45 +35,41 @@ def save_schedule(dic, org_dst, fecha, horarios):
 	pickle.dump(dic, fichero)
 	fichero.close()
 
-def get_html(org, dst):
-	r = requests.post('http://horarios.renfe.com/cer/hjcer310.jsp',
-	                    data = {'nucleo':'30', 'i':'s', 'cp':'NO',
-	                            'o':org, 'd':dst, 'df':'20160617',
-	                            'ho':'00', 'hd':'26', 'TXTInfo':''}).text
-	document, errors = tidy_document(r)
-	return document
 
 def return_schedule(orig, dest):
 	hoy = date.today().strftime("%d-%m-%Y")
-	while True:
-		try:
-			fichero = open("horarios", "r")
-			dic = pickle.load(fichero)
-			fichero.close()
-		except IOError:
-			print "IOError"
-			new_empty_file()
-		else:
-			org_dst = orig + "_" + dest
-			print org_dst
-			horas = []
-			if not org_dst in dic or dic[org_dst][0] != hoy:
-				html = get_html(orig, dest)
-				horas = get_schedule(html)
-				save_schedule(dic, org_dst, hoy, horas)
-			else:
-				horas = dic[org_dst][1]
-			horas = [i for i in horas if datetime.strptime(i, "%H.%M").time() > datetime.now().time()]
-			if not horas:
-				return "Vaya, parece que ya no hay mas trenes hoy"
-			else:
-				return "\n".join(horas)
+
+	if not os.path.isfile("horarios"):
+		new_empty_file()
+
+	fichero = open("horarios", "r")
+	dic = pickle.load(fichero)
+	fichero.close()
+	org_dst = orig + "_" + dest
+	print org_dst
+	horas = []
+	if not org_dst in dic or dic[org_dst][0] != hoy:
+		html = get_html(orig, dest)
+		horas = get_schedule(html)
+		if horas == None:
+			return "Parece que la web de Renfe no funciona ahora mismo.\nIntentalo mas tarde"
+		save_schedule(dic, org_dst, hoy, horas)
+	else:
+		horas = dic[org_dst][1]
+	horas = [i for i in horas if datetime.strptime(i, "%H.%M").time() > datetime.now().time()]
+	if not horas:
+		return "Vaya, parece que ya no hay mas trenes hoy"
+	else:
+		return "\n".join(horas)
 
 def main():
 
 	bot = telebot.TeleBot(token, skip_pending=True)
 
 	stations = get_stations()
+
+	if stations == None:
+		return "No ha sido posible establecer la conexion con la Pagina de Renfe"
 
 	@bot.message_handler(commands=['start'])
 	def send_welcome(message):
@@ -111,7 +111,6 @@ def main():
 					bot.reply_to(message, "No has introducido bien el comando")
 
 	bot.polling()
-
 
 if __name__ == "__main__":
 	main()
