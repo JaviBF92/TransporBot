@@ -36,7 +36,7 @@ def save_schedule(dic, org_dst, fecha, horarios):
 	fichero.close()
 
 
-def return_schedule(orig, dest):
+def return_schedule(entries):
 	hoy = date.today().strftime("%d-%m-%Y")
 
 	if not os.path.isfile("horarios"):
@@ -45,6 +45,8 @@ def return_schedule(orig, dest):
 	fichero = open("horarios", "r")
 	dic = pickle.load(fichero)
 	fichero.close()
+	orig = entries[0]
+	dest = entries[1]
 	org_dst = orig + "_" + dest
 	print org_dst
 	horas = []
@@ -56,7 +58,13 @@ def return_schedule(orig, dest):
 		save_schedule(dic, org_dst, hoy, horas)
 	else:
 		horas = dic[org_dst][1]
-	horas = [i for i in horas if datetime.strptime(i, "%H.%M").time() > datetime.now().time()]
+	#Si al comando se le ha incluido una hora se devuelven las horas a partir de esta
+	#Si no se devuelven las horas a partir de la actual
+	if len(entries) == 3:
+		filtro_hora = entries[2]
+	else:
+		filtro_hora = datetime.now().time()
+	horas = [i for i in horas if datetime.strptime(i, "%H.%M").time() > filtro_hora]
 	if not horas:
 		return "Vaya, parece que ya no hay mas trenes hoy"
 	else:
@@ -77,7 +85,7 @@ def main():
 
 	@bot.message_handler(commands=['help'])
 	def send_help(message):
-	        bot.reply_to(message, "Comandos:\n /estaciones Manera correcta de escribir las estaciones\n/[provincia] [origen] [destino] Horarios desde la hora actual\n/[ciudad] [origen] [destino] [hora] Horarios desde la hora especificada")
+	        bot.reply_to(message, "Comandos:\n /estaciones Manera correcta de escribir las estaciones\n/[provincia] [origen] [destino] Horarios desde la hora actual\n/[ciudad] [origen] [destino] [hora] Horarios desde la hora especificada\n El formato de los horarios es HH.MM")
 
 	@bot.message_handler(commands=['estaciones'])
 	def send_stations(message):
@@ -90,7 +98,7 @@ def main():
 	def send_schedule(message):
 		texto = message.text.lower()
 		listacomando = texto.split(' ')
-		if len(listacomando) in range(3):
+		if len(listacomando) in range(3) or len(listacomando) > 4:
 			bot.reply_to(message, "No has introducido bien el comando")
 		else:
 			if not listacomando[1] in stations:
@@ -100,15 +108,16 @@ def main():
 			elif listacomando[1] == listacomando[2]:
 				bot.reply_to(message, "No creo que quieras saber eso")
 			else:
-				if len(listacomando) == 3:
-					res = return_schedule(stations[listacomando[1]], stations[listacomando[2]])
+				try:
+					entries = [stations[i] for i in listacomando[1:3]]
+					if len(listacomando) == 4:
+						time = datetime.strptime(listacomando[3], "%H.%M").time()
+						entries.append(time)
+				except ValueError:
+					bot.reply_to(message, "El formato para la hora que has introducido no es el correcto")
+				else:
+					res = return_schedule(entries)
 					bot.reply_to(message, res)
-				if len(listacomando) == 4:
-					origen = str(listacomando[1])
-					destino = str(listacomando[2])
-					hora = str(listacomando[3])
-				if len(listacomando) > 4:
-					bot.reply_to(message, "No has introducido bien el comando")
 
 	bot.polling()
 
