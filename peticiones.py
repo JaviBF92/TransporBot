@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from tidylib import tidy_document # http://countergram.com/open-source/pytidylib/docs/index.html
 import requests
 
+
 def get_stations():
         try:
             web = requests.get('http://horarios.renfe.com/cer/hjcer300.jsp?NUCLEO=30&CP=NO&I=s#', timeout=4).text

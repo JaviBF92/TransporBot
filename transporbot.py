@@ -11,10 +11,14 @@ from token import token
 
 def get_schedule(html):
 	soup = BeautifulSoup(html, 'html.parser')
-	table = soup.body.table
+	body = soup.body
+	table = body.table
 
 	if table == None:
-		return None
+		if any(["No Existen Servicios" in i.text for i in soup.body.div.find_all("h4")]):
+			return []
+		else:
+			return None
 	else:
 		#Comprueba si es trasbordo
 		if "Origen" in str(table.tbody.contents[3].contents[3]):
@@ -66,7 +70,7 @@ def return_schedule(entries):
 		filtro_hora = datetime.now().time()
 	horas = [i for i in horas if datetime.strptime(i, "%H.%M").time() > filtro_hora]
 	if not horas:
-		return "Vaya, parece que ya no hay mas trenes hoy"
+		return "Vaya! Parece que no hay trenes disponibles"
 	else:
 		return "\n".join(horas)
 
