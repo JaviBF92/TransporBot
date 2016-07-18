@@ -17,11 +17,11 @@ def get_stations():
             estaciones_ids = [(option.text.strip().replace(" ", "").lower(), option['value']) for option in estaciones][1:]
             return {key: value for (key, value) in estaciones_ids}
 
-def get_html(org, dst):
+def get_html(org, dst, date):
     try:
         r = requests.post('http://horarios.renfe.com/cer/hjcer310.jsp',
     	                    data = {'nucleo':'30', 'i':'s', 'cp':'NO',
-    	                            'o':org, 'd':dst, 'df':'20160617',
+    	                            'o':org, 'd':dst, 'df':date,
     	                            'ho':'00', 'hd':'26', 'TXTInfo':''}, timeout=4).text
     except Timeout:
         return None

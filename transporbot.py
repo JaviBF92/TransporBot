@@ -55,7 +55,8 @@ def return_schedule(entries):
 	print org_dst
 	horas = []
 	if not org_dst in dic or dic[org_dst][0] != hoy:
-		html = get_html(orig, dest)
+		req_date = date.today().strftime("%Y%m%d")
+		html = get_html(orig, dest, req_date)
 		horas = get_schedule(html)
 		if horas == None:
 			return "Parece que la web de Renfe no funciona ahora mismo.\nIntentalo mas tarde"
