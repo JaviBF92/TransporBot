@@ -89,6 +89,7 @@ ENV/
 .ropeproject
 
 #Other project files
+tests/
 token.py
 horarios
 TODO
