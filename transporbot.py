@@ -128,7 +128,7 @@ def main():
 					res = return_schedule(entries)
 					bot.reply_to(message, res)
 
-	bot.polling()
+	bot.polling(none_stop=True)
 
 if __name__ == "__main__":
 	main()
