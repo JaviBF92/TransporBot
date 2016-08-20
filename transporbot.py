@@ -6,6 +6,7 @@ from subprocess import call
 import telebot, os.path
 from peticiones import get_stations, get_html
 from tidylib import tidy_document
+from difflib import *
 from token import token
 
 
@@ -29,6 +30,7 @@ def get_schedule(html):
 			transbordo = None
 			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color1" })[::2] if i.string != None]
 			horarios_t = []
+
 	return (transbordo, horarios, horarios_t)
 
 def new_empty_file():
@@ -55,6 +57,7 @@ def return_schedule(entries):
 	org_dst = orig + "_" + dest
 	print org_dst
 	horas = []
+
 	if not org_dst in dic or dic[org_dst][0] != today:
 		html = get_html(orig, dest, today)
 		transbordo, horas, horas_t = get_schedule(html)
@@ -63,6 +66,7 @@ def return_schedule(entries):
 		save_schedule(dic, org_dst, today, transbordo, horas, horas_t)
 	else:
 		transbordo, horas, horas_t =  dic[org_dst][1:]
+
 	#Si al comando se le ha incluido una hora se devuelven las horas a partir de esta
 	#Si no se devuelven las horas a partir de la actual
 	if len(entries) == 3:
@@ -71,6 +75,7 @@ def return_schedule(entries):
 		filtro_hora = datetime.now().time()
 	horas = [i for i in horas if datetime.strptime(i, "%H.%M").time() > filtro_hora]
 	horas_t = horas_t[(len(horas_t) - len(horas)):]
+
 	if not horas:
 		return "Vaya! Parece que no hay trenes disponibles"
 	else:
@@ -78,6 +83,27 @@ def return_schedule(entries):
 			return "\n".join(horas)
 		else:
 			return "Transbordo en: " + transbordo + "\n" + "\n".join([horas[i] + "-" + horas_t[i] for i in range(len(horas))])
+
+def get_closest(entries, word):
+
+	    closest = [i for i in entries if word in i]
+	    res = ""
+
+	    if len(closest) == 1:
+	        res = closest[0]
+
+	    elif len(closest) > 1:
+	        close_matches = get_close_matches(word, entries, cutoff=0.8)
+	        closest = set(closest).intersection(close_matches)
+	        if len(closest) == 1:
+	            res = closest[0]
+
+	    else:
+	        close_matches = get_close_matches(word, entries, cutoff=0.8)
+	        if len(close_matches) == 1:
+	            res = close_matches[0]
+
+	    return res
 
 def main():
 
@@ -103,30 +129,38 @@ def main():
 	def send_stations(message):
 	        bot.reply_to(message, "\n".join(sorted(stations.keys())))
 
-	@bot.message_handler(commands=['sevilla'])
+	@bot.message_handler(commands=['sevilla', 'Sevilla'])
 	def send_schedule(message):
 		texto = message.text.lower()
 		listacomando = texto.split(' ')
-		if len(listacomando) in range(3) or len(listacomando) > 4:
+
+		if len(listacomando) not in [3, 4]:
 			bot.reply_to(message, "No has introducido bien el comando")
 		else:
-			if not listacomando[1] in stations:
-				bot.reply_to(message, "La estacion de origen no existe")
-			elif not listacomando[2] in stations:
-				bot.reply_to(message, "La estacion de destino no existe")
-			elif listacomando[1] == listacomando[2]:
+			commands = listacomando[1:3]
+			if not commands[0] in stations: #complementar con nueva funcion
+				commands[0] = get_closest(stations, commands[0])
+
+			if not commands[1] in stations: #complementar con nueva funcion
+				commands[1] = get_closest(stations, commands[1])
+
+			if commands[0] == "":
+				bot.reply_to(message, "No se ha encontrado la estacion de origen")
+			elif commands[1] == "":
+				bot.reply_to(message, "No se ha encontrado la estacion de destino")
+			elif commands[0] == commands[1]:
 				bot.reply_to(message, "No creo que quieras saber eso")
 			else:
+				entries = [stations[i] for i in commands]
 				try:
-					entries = [stations[i] for i in listacomando[1:3]]
 					if len(listacomando) == 4:
 						time = datetime.strptime(listacomando[3], "%H.%M").time()
 						entries.append(time)
 				except ValueError:
-					bot.reply_to(message, "El formato para la hora que has introducido no es el correcto")
+					bot.reply_to(message, "Formato de fecha incorrecto")
 				else:
 					res = return_schedule(entries)
-					bot.reply_to(message, res)
+					bot.reply_to(message, "Horarios de\n"+ commands[0]+"-"+commands[1]+"\n"+res)
 
 	bot.polling(none_stop=True)
 
