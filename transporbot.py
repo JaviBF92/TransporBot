@@ -83,7 +83,6 @@ def return_schedule(entries):
 			return "Transbordo en: " + transbordo + "\n" + "\n".join([horas[i] + "-" + horas_t[i] for i in range(len(horas))])
 
 def get_closest(entries, word):
-
 	    closest = [i for i in entries if word in i]
 	    res = ""
 
@@ -121,13 +120,13 @@ def main():
 
 	@bot.message_handler(commands=['help'])
 	def send_help(message):
-	        bot.reply_to(message, "Comandos:\n /estaciones Manera correcta de escribir las estaciones\n/[provincia] [origen] [destino] Horarios desde la hora actual\n/[ciudad] [origen] [destino] [hora] Horarios desde la hora especificada\n El formato de los horarios es HH.MM")
+	        bot.reply_to(message, "Comandos:\n /estaciones Estaciones de la zona\n/[provincia] [origen] [destino] Horarios desde la hora actual\n/[provincia] [origen] [destino] [hora] Horarios desde la hora especificada\n El formato de los horarios es HH.MM")
 
 	@bot.message_handler(commands=['estaciones'])
 	def send_stations(message):
 	        bot.reply_to(message, "\n".join(sorted(stations.keys())))
 
-	@bot.message_handler(commands=['sevilla', 'Sevilla'])
+	@bot.message_handler(commands=['sev', 'Sev'])
 	def send_schedule(message):
 		texto = message.text.lower()
 		listacomando = texto.split(' ')
