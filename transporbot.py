@@ -2,7 +2,6 @@
 from bs4 import BeautifulSoup
 from datetime import date, datetime
 import cPickle as pickle
-from subprocess import call
 import telebot, os.path
 from peticiones import get_stations, get_html
 from tidylib import tidy_document
@@ -34,8 +33,7 @@ def get_schedule(html):
 	return (transbordo, horarios, horarios_t)
 
 def new_empty_file():
-	call(["touch", "horarios"])
-	fichero = open('horarios', 'w')
+	fichero = open('horarios', 'w+')
 	pickle.dump({}, fichero)
 	fichero.close()
 
