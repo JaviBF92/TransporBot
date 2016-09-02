@@ -158,13 +158,13 @@ def main():
 				else:
 					res = return_schedule(entries)
 					bot.reply_to(message, "Horarios de\n"+ commands[0]+"-"+commands[1]+"\n"+res)
+
 	while(True):
 		try:
 			bot.polling(none_stop=True)
+			break
 		except AttributeError:
 			print("AttributeError exception")
-		except as err:
-			print(err)
 
 if __name__ == "__main__":
 	main()
