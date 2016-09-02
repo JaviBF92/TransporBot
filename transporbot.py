@@ -55,7 +55,7 @@ def return_schedule(entries):
 	orig = entries[0]
 	dest = entries[1]
 	org_dst = orig + "_" + dest
-	print org_dst
+	print(org_dst)
 	horas = []
 
 	if not org_dst in dic or dic[org_dst][0] != today:
@@ -161,8 +161,13 @@ def main():
 				else:
 					res = return_schedule(entries)
 					bot.reply_to(message, "Horarios de\n"+ commands[0]+"-"+commands[1]+"\n"+res)
-
-	bot.polling(none_stop=True)
+	while(True):
+		try:
+			bot.polling(none_stop=True)
+		except AttributeError:
+			print("AttributeError exception")
+		except as err:
+			print(err)
 
 if __name__ == "__main__":
 	main()
