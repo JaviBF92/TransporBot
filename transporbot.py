@@ -165,6 +165,8 @@ def main():
 			break
 		except AttributeError:
 			print("AttributeError exception")
+		except Exception as e:
+			print(e)
 
 if __name__ == "__main__":
 	main()
