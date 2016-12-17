@@ -163,10 +163,10 @@ def main():
 		try:
 			bot.polling(none_stop=True)
 			break
-		except AttributeError:
-			print("AttributeError exception")
 		except Exception as e:
-			print(e)
+			with open('log','w+') as f:
+				f.write(str(datetime.now().strftime("%d-%m-%y"))+"\n")
+				f.write(str(e)+"\n")
 
 if __name__ == "__main__":
 	main()
