@@ -90,6 +90,6 @@ ENV/
 
 #Other project files
 tests/
-token.py
+telegram_token.py
 horarios
 TODO

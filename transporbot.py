@@ -6,7 +6,7 @@ import telebot, os.path
 from peticiones import get_stations, get_html
 from tidylib import tidy_document
 from difflib import *
-from token import token
+from telegram_token import token
 
 
 def get_schedule(html):
