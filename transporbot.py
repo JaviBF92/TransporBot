@@ -116,17 +116,17 @@ def main():
 
 	@bot.message_handler(commands=['start'])
 	def send_welcome(message):
-		bot.reply_to(message, "Bot para conocer los horarios de Renfe Cercanias.\nPara conocer los comandos, escribe /help.")
+		bot.reply_to(message, "Bot para obtener horarios de trenes de cercanías de Sevilla.\nPara conocer los comandos, escribe /help.")
 
 	@bot.message_handler(commands=['help'])
 	def send_help(message):
-	        bot.reply_to(message, "Comandos:\n /estaciones Estaciones de la zona\n/[provincia] [origen] [destino] Horarios desde la hora actual\n/[provincia] [origen] [destino] [hora] Horarios desde la hora especificada\n El formato de los horarios es HH.MM")
+	        bot.reply_to(message, "Comandos:\n /estaciones : Estaciones de la zona\n/tren [origen] [destino] : Horarios desde la hora actual\n/tren [origen] [destino] [hora] Horarios desde la hora especificada\n (El formato de los horarios es HH.MM)")
 
 	@bot.message_handler(commands=['estaciones'])
 	def send_stations(message):
 	        bot.reply_to(message, "\n".join(sorted(stations.keys())))
 
-	@bot.message_handler(commands=['sev', 'Sev'])
+	@bot.message_handler(commands=['tren', 'Tren', 'TREN'])
 	def send_schedule(message):
 		texto = message.text.lower()
 		listacomando = texto.split(' ')
@@ -135,10 +135,10 @@ def main():
 			bot.reply_to(message, "No has introducido bien el comando")
 		else:
 			commands = listacomando[1:3]
-			if not commands[0] in stations: #complementar con nueva funcion
+			if not commands[0] in stations:
 				commands[0] = get_closest(stations, commands[0])
 
-			if not commands[1] in stations: #complementar con nueva funcion
+			if not commands[1] in stations:
 				commands[1] = get_closest(stations, commands[1])
 
 			if commands[0] == "":
@@ -146,7 +146,7 @@ def main():
 			elif commands[1] == "":
 				bot.reply_to(message, "No se ha encontrado la estacion de destino")
 			elif commands[0] == commands[1]:
-				bot.reply_to(message, "No creo que quieras saber eso")
+				bot.reply_to(message, "¿Has realizado la busqueda bien?")
 			else:
 				entries = [stations[i] for i in commands]
 				try:
@@ -154,7 +154,7 @@ def main():
 						time = datetime.strptime(listacomando[3], "%H.%M").time()
 						entries.append(time)
 				except ValueError:
-					bot.reply_to(message, "Formato de fecha incorrecto")
+					bot.reply_to(message, "Has introducido un formato de fecha incorrecto.\n El correcto es HH.MM")
 				else:
 					res = return_schedule(entries)
 					bot.reply_to(message, "Horarios de\n"+ commands[0]+"-"+commands[1]+"\n"+res)
