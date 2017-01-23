@@ -1,4 +1,5 @@
-# encoding :utf-8
+#!/usr/bin/python
+#coding=utf-8
 from bs4 import BeautifulSoup
 from datetime import date, datetime
 import cPickle as pickle
@@ -60,7 +61,7 @@ def return_schedule(entries):
 		html = get_html(orig, dest, today)
 		transbordo, horas, horas_t = get_schedule(html)
 		if horas == None:
-			return "Parece que la web de Renfe no funciona ahora mismo.\nIntentalo mas tarde"
+			return "Parece que la web de Renfe no funciona ahora mismo.\nInténtalo mas tarde"
 		save_schedule(dic, org_dst, today, transbordo, horas, horas_t)
 	else:
 		transbordo, horas, horas_t =  dic[org_dst][1:]
@@ -75,7 +76,7 @@ def return_schedule(entries):
 	horas_t = horas_t[(len(horas_t) - len(horas)):]
 
 	if not horas:
-		return "Vaya! Parece que no hay trenes disponibles"
+		return "¡Vaya! Parece que no hay trenes disponibles"
 	else:
 		if transbordo == None:
 			return "\n".join(horas)
@@ -112,19 +113,19 @@ def main():
 	stations = get_stations()
 
 	if stations == None:
-		return "No ha sido posible establecer la conexion con la Pagina de Renfe"
+		return "No ha sido posible establecer la conexión con la Pagina de Renfe"
 
 	@bot.message_handler(commands=['start'])
 	def send_welcome(message):
-		bot.reply_to(message, "Bot para obtener horarios de trenes de cercanías de Sevilla.\nPara conocer los comandos, escribe /help.")
+		bot.send_message(message.chat.id, "Bot para obtener horarios de trenes de cercanías de Sevilla, y próximamente también los horarios de Tussam.\nPara conocer los comandos, escribe /help.")
 
 	@bot.message_handler(commands=['help'])
 	def send_help(message):
-	        bot.reply_to(message, "Comandos:\n /estaciones : Estaciones de la zona\n/tren [origen] [destino] : Horarios desde la hora actual\n/tren [origen] [destino] [hora] Horarios desde la hora especificada\n (El formato de los horarios es HH.MM)")
+	        bot.send_message(message.chat.id, "Comandos:\n/estaciones : Estaciones de la zona\n/tren [origen] [destino] : Horarios desde la hora actual\n/tren [origen] [destino] [hora] Horarios desde la hora especificada.\n(Formato: HH.MM)")
 
 	@bot.message_handler(commands=['estaciones'])
 	def send_stations(message):
-	        bot.reply_to(message, "\n".join(sorted(stations.keys())))
+	        bot.send_message(message.chat.id, "\n".join(sorted(stations.keys())))
 
 	@bot.message_handler(commands=['tren', 'Tren', 'TREN'])
 	def send_schedule(message):
@@ -132,7 +133,7 @@ def main():
 		listacomando = texto.split(' ')
 
 		if len(listacomando) not in [3, 4]:
-			bot.reply_to(message, "No has introducido bien el comando")
+			bot.send_message(message.chat.id, "No has introducido bien el comando")
 		else:
 			commands = listacomando[1:3]
 			if not commands[0] in stations:
@@ -142,11 +143,11 @@ def main():
 				commands[1] = get_closest(stations, commands[1])
 
 			if commands[0] == "":
-				bot.reply_to(message, "No se ha encontrado la estacion de origen")
+				bot.send_message(message.chat.id, "No se ha encontrado la estación de origen")
 			elif commands[1] == "":
-				bot.reply_to(message, "No se ha encontrado la estacion de destino")
+				bot.send_message(message.chat.id, "No se ha encontrado la estación de destino")
 			elif commands[0] == commands[1]:
-				bot.reply_to(message, "¿Has realizado la busqueda bien?")
+				bot.send_message(message.chat.id, "¿Has realizado la búsqueda bien?")
 			else:
 				entries = [stations[i] for i in commands]
 				try:
@@ -154,10 +155,10 @@ def main():
 						time = datetime.strptime(listacomando[3], "%H.%M").time()
 						entries.append(time)
 				except ValueError:
-					bot.reply_to(message, "Has introducido un formato de fecha incorrecto.\n El correcto es HH.MM")
+					bot.send_message(message.chat.id, "Has introducido un formato de fecha incorrecto.\n El correcto es HH.MM")
 				else:
 					res = return_schedule(entries)
-					bot.reply_to(message, "Horarios de\n"+ commands[0]+"-"+commands[1]+"\n"+res)
+					bot.send_message(message.chat.id, "Horarios de\n"+ commands[0]+"-"+commands[1]+"\n"+res)
 
 	while(True):
 		try:

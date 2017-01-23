@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+#coding=utf-8
 from bs4 import BeautifulSoup
 from tidylib import tidy_document # http://countergram.com/open-source/pytidylib/docs/index.html
 import requests
