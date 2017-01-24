@@ -1,5 +1,5 @@
 #!/usr/bin/env
-#coding=utf-8
+#encoding=utf-8
 from bs4 import BeautifulSoup
 from datetime import date, datetime
 import cPickle as pickle
@@ -76,7 +76,7 @@ def return_schedule(entries):
 	horas_t = horas_t[(len(horas_t) - len(horas)):]
 
 	if not horas:
-		return "¡Vaya! Parece que no hay trenes disponibles"
+		return unicode("¡Vaya! Parece que no hay trenes disponibles", encoding='utf-8')
 	else:
 		if transbordo == None:
 			return "\n".join(horas)
