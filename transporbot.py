@@ -121,7 +121,7 @@ def main():
 
 	@bot.message_handler(commands=['help'])
 	def send_help(message):
-	        bot.send_message(message.chat.id, "Comandos:\n/estaciones : Estaciones de la zona\n/tren [origen] [destino] : Horarios desde la hora actual\n/tren [origen] [destino] [hora] Horarios desde la hora especificada.\n(Formato: HH.MM)")
+	        bot.send_message(message.chat.id, "Comandos:\n/estaciones : Comandos referentes a las estaciones de sevilla\n/tren [origen] [destino] : Horarios desde la hora actual\n/tren [origen] [destino] [hora] Horarios desde la hora especificada.\n(Formato: HH.MM)")
 
 	@bot.message_handler(commands=['estaciones'])
 	def send_stations(message):
