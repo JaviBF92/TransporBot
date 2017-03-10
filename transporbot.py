@@ -15,7 +15,7 @@ def get_schedule(html):
 	body = soup.body
 	table = body.table
 
-	if table == None:
+	if not table:
 		if any(["No Existen Servicios" in i.text for i in soup.body.div.find_all("h4")]):
 			return ("", [], [])
 		else:
@@ -24,33 +24,30 @@ def get_schedule(html):
 		#Comprueba si es trasbordo
 		if any(["Transbordo en" in i.text for i in table.findAll('td', { "class" : "cabe" })]):
 			transbordo = table.tbody.contents[5].td.string.strip()
-			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color2" })[::3] if i.string != None]
-			horarios_t = [i.string.strip() for i in table.findAll('td', { "class" : "color3" })[::2] if i.string != None]
+			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color2" })[::3] if i.string is not None]
+			horarios_t = [i.string.strip() for i in table.findAll('td', { "class" : "color3" })[::2] if i.string is not None]
 		else:
 			transbordo = None
-			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color1" })[::2] if i.string != None]
+			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color1" })[::2] if i.string is not None]
 			horarios_t = []
 
 	return (transbordo, horarios, horarios_t)
 
 def new_empty_file():
-	fichero = open('horarios', 'w+')
-	pickle.dump({}, fichero)
-	fichero.close()
+	with open('horarios', 'w+') as fichero:
+		pickle.dump({}, fichero)
 
 def save_schedule(dic, org_dst, fecha, transbordo, horarios, horarios_t):
 	dic[org_dst] = (fecha, transbordo, horarios, horarios_t)
-	fichero = open('horarios', 'w')
-	pickle.dump(dic, fichero)
-	fichero.close()
-
+	with open('horarios', 'w') as fichero:
+		pickle.dump(dic, fichero)
 
 def return_schedule(entries):
 	today = date.today().strftime("%Y%m%d")
 
-	fichero = open("horarios", "r")
-	dic = pickle.load(fichero)
-	fichero.close()
+	with open("horarios", "r") as fichero:
+		dic = pickle.load(fichero)
+
 	orig = entries[0]
 	dest = entries[1]
 	org_dst = orig + "_" + dest
@@ -60,7 +57,7 @@ def return_schedule(entries):
 	if not org_dst in dic or dic[org_dst][0] != today:
 		html = get_html(orig, dest, today)
 		transbordo, horas, horas_t = get_schedule(html)
-		if horas == None:
+		if not horas:
 			return "Parece que la web de Renfe no funciona ahora mismo.\nInténtalo mas tarde"
 		save_schedule(dic, org_dst, today, transbordo, horas, horas_t)
 	else:
@@ -158,7 +155,7 @@ def main():
 					bot.send_message(message.chat.id, "Has introducido un formato de fecha incorrecto.\n El correcto es HH.MM")
 				else:
 					res = return_schedule(entries)
-					bot.send_message(message.chat.id, "Horarios de\n"+ commands[0]+"-"+commands[1]+"\n"+res)
+					bot.send_message(message.chat.id, "Horarios de\n"+ commands[0]+"->"+commands[1]+"\n"+res)
 
 	while(True):
 		try:
