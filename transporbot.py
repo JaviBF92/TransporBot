@@ -8,6 +8,7 @@ from peticiones import get_stations, get_html
 from tidylib import tidy_document
 from difflib import *
 from telegram_token import token
+import traceback, os
 
 
 def get_schedule(html):
@@ -161,10 +162,17 @@ def main():
 		try:
 			bot.polling(none_stop=True)
 			break
-		except Exception as e:
-			with open('log','w+') as f:
-				f.write(str(datetime.now().strftime("%d-%m-%y"))+"\n")
-				f.write(str(e)+"\n")
+		except Exception:
+			if not os.path.isfile('log') or os.path.isfile('log') and os.stat('log').st_size > 10240:
+				permission = 'w+'
+			else:
+				permission = 'a+'
+
+			with open('log',permission) as f:
+				info = traceback.format_exc()
+				if permission == 'w+' or f.readlines()[-2] not in info:
+					f.write(str(datetime.now().strftime("%d-%m-%y %H:%M"))+"\n")
+					f.write(info+"\n")
 
 if __name__ == "__main__":
 	main()
