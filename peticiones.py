@@ -1,8 +1,11 @@
 #!/usr/bin/env
 #encoding=utf-8
 from bs4 import BeautifulSoup
-from tidylib import tidy_document # http://countergram.com/open-source/pytidylib/docs/index.html
+from tidylib import Tidy # http://countergram.com/open-source/pytidylib/docs/index.html
 import requests
+
+
+tidy = Tidy()
 
 
 def get_stations():
@@ -11,7 +14,7 @@ def get_stations():
         except Timeout:
             return None
         else:
-            document, errors = tidy_document(web)
+            document, errors = tidy.tidy_document(web)
             bs = BeautifulSoup(document, 'html.parser')
             estaciones = bs.find('select', {"name":"o"}).findAll('option')
             estaciones_ids = [(option.text.strip().replace(" ", "").lower(), option['value']) for option in estaciones][1:]
@@ -26,7 +29,7 @@ def get_html(org, dst, date):
     except Timeout:
         return None
     else:
-        document, errors = tidy_document(r)
+        document, errors = tidy.tidy_document(r)
     	return document
 
 if __name__ == "__main__":

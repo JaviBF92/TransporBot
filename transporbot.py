@@ -5,7 +5,6 @@ from datetime import date, datetime
 import cPickle as pickle
 import telebot, os.path
 from peticiones import get_stations, get_html
-from tidylib import tidy_document
 from difflib import *
 from telegram_token import token
 
