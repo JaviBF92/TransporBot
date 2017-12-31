@@ -15,21 +15,15 @@ def get_schedule(html):
 	body = soup.body
 	table = body.table
 
-	if table == None:
-		if any(["No Existen Servicios" in i.text for i in soup.body.div.find_all("h4")]):
-			return ("", [], [])
-		else:
-			return (None, None, None)
+	#Comprueba si es trasbordo
+	if "Transbordo en" in table.tr.text:
+		transbordo = table.tbody.contents[5].td.string.strip()
+		#horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color2" })[::3] if i.string != None]
+		#horarios_t = [i.string.strip() for i in table.findAll('td', { "class" : "color3" })[::2] if i.string != None]
 	else:
-		#Comprueba si es trasbordo
-		if any(["Transbordo en" in i.text for i in table.findAll('td', { "class" : "cabe" })]):
-			transbordo = table.tbody.contents[5].td.string.strip()
-			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color2" })[::3] if i.string != None]
-			horarios_t = [i.string.strip() for i in table.findAll('td', { "class" : "color3" })[::2] if i.string != None]
-		else:
-			transbordo = None
-			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color1" })[::2] if i.string != None]
-			horarios_t = []
+		transbordo = None
+		horarios=[i.string.strip() for i in table.findAll('td')[2::5]][1:]
+		horarios_t = []
 
 	return (transbordo, horarios, horarios_t)
 
@@ -60,8 +54,6 @@ def return_schedule(entries):
 	if not org_dst in dic or dic[org_dst][0] != today:
 		html = get_html(orig, dest, today)
 		transbordo, horas, horas_t = get_schedule(html)
-		if horas == None:
-			return "Parece que la web de Renfe no funciona ahora mismo.\nInténtalo mas tarde"
 		save_schedule(dic, org_dst, today, transbordo, horas, horas_t)
 	else:
 		transbordo, horas, horas_t =  dic[org_dst][1:]
@@ -161,13 +153,13 @@ def main():
 					bot.send_message(message.chat.id, "Horarios de\n"+ commands[0]+"-"+commands[1]+"\n"+res)
 
 	while(True):
-		try:
-			bot.polling(none_stop=True)
-			break
-		except Exception as e:
-			with open('log','w+') as f:
-				f.write(str(datetime.now().strftime("%d-%m-%y"))+"\n")
-				f.write(str(e)+"\n")
+		#try:
+		bot.polling(none_stop=True)
+			#break
+		#except Exception as e:
+			#with open('log','w+') as f:
+				#f.write(str(datetime.now().strftime("%d-%m-%y"))+"\n")
+				#f.write(str(e)+"\n")
 
 if __name__ == "__main__":
 	main()
