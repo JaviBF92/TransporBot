@@ -12,18 +12,22 @@ from telegram_token import token
 
 def get_schedule(html):
 	soup = BeautifulSoup(html, 'html.parser')
-	body = soup.body
-	table = body.table
+	table = soup.body.table
 
 	#Comprueba si es trasbordo
-	if "Transbordo en" in table.tr.text:
-		transbordo = table.tbody.contents[5].td.string.strip()
-		#horarios = [i.string.strip() for i in table.findAll('td', { "class" : "color2" })[::3] if i.string != None]
-		#horarios_t = [i.string.strip() for i in table.findAll('td', { "class" : "color3" })[::2] if i.string != None]
+	if table:
+		body=table.tbody
+		if "Transbordo en" in body.text:
+			transbordo = body.contents[3].td.string.strip()
+			horarios = [i.string.strip() for i in table.findAll('td', { "class" : "" })[1::7] if i.string != None]
+			horarios_t = [i.string.strip() for i in table.findAll('td', { "class" : "" })[3::7] if i.string != None]
+			print horarios, horarios_t
+		else:
+			transbordo = None
+			horarios=[i.string.strip() for i in table.findAll('td')[2::5]][1:]
+			horarios_t = []
 	else:
-		transbordo = None
-		horarios=[i.string.strip() for i in table.findAll('td')[2::5]][1:]
-		horarios_t = []
+		return ()
 
 	return (transbordo, horarios, horarios_t)
 
